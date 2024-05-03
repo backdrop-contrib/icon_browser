@@ -1,0 +1,50 @@
+<?php
+/**
+ * @file
+ * Icon Browser module file.
+ */
+
+ define ('ICON_BROWSER_PATH', 'core/misc/icons');
+
+/**
+ * Implements hook_menu().
+ */
+function icon_browser_menu() {
+  $items = array();
+
+  $items['admin/config/media/icon'] = array(
+    'title' => 'Icon browser',
+    'page callback' => 'icon_browser_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'icon_browser.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/config/media/icon/browse'] = array(
+    'title' => 'Icon browser',
+    'description' => 'Browse available icons.',
+    'page callback' => 'icon_browser_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'icon_browser.admin.inc',
+  );
+  $items['admin/config/media/icon/%icon_browser'] = array(
+    'title' => 'Icon',
+    'description' => 'View a particular icon',
+    'page callback' => 'icon_browser_view_icon',
+    'page arguments' => array(4),
+    'access arguments' => array('access administration pages'),
+    'file' => 'icon_browser.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_load().
+ */
+function icon_browser_load($icon_name) {
+  return array(
+    'name' => $icon_name,
+    'path' => icon_get_path($icon_name),
+  );
+}

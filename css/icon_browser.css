@@ -1,0 +1,60 @@
+.icon-browser-filters > form > div {
+  display: flex;
+  align-items: last baseline;
+  gap: 1.5rem;
+}
+
+.icon-browser-list {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 1.5rem;
+
+  .icon-wrapper {
+    width: 72px;
+    display: inline-block;
+    font-size: .7rem;
+    margin: .25rem;
+
+    .icon {
+      width: 36px;
+      margin: 0 auto;
+    }
+  }
+
+  &[data-icon-size="small"] {
+    .icon-wrapper .icon {
+      width: 24px;
+    }
+  }
+
+  &[data-icon-size="large"] {
+    .icon-wrapper .icon {
+      width: 48px;
+    }
+  }
+
+  &[data-icon-size="xlarge"] {
+    .icon-wrapper .icon {
+      width: 56px;
+    }
+  }
+}
+
+.icon-detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+
+  .icon-image {
+    grid-column: 1;
+  }
+
+  .icon-instructions {
+    grid-column: 2;
+  }
+  .icon-name,
+  .icon-php,
+  .icon-js {
+    padding: 1rem 0;
+  }
+}

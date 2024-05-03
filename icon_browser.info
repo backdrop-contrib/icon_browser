@@ -1,0 +1,10 @@
+type = module
+name = Icon Browser
+description = "Browse icons available through the core Icon API."
+package = Media
+tags[] = Media
+tags[] = Icons
+tags[] = User Interface
+backdrop = 1.x
+
+configure = admin/config/media/icons
