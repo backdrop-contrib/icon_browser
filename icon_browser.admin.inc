@@ -163,7 +163,8 @@ function theme_icon_browser_page($variables) {
   backdrop_set_title(t('Icon Browser'));
   // Filters.
   $output .= '<div class="icon-browser-filters">';
-  $output .= render(backdrop_get_form('icon_browser_filters_form'));
+  $filters = backdrop_get_form('icon_browser_filters_form');
+  $output .= render($filters);
   $output .= '</div>';
   // Icons.
   $provider = icon_browser_get_filter_value('provider');
