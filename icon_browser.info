@@ -7,4 +7,6 @@ tags[] = Icons
 tags[] = User Interface
 backdrop = 1.x
 
+dependencies[] = system (>=1.28)
+
 configure = admin/config/media/icons
