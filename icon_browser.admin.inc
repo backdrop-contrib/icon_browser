@@ -159,8 +159,27 @@ function icon_browser_filters_form_submit($form, &$form_state) {
  * Theme hook for the icon browser page.
  */
 function theme_icon_browser_page($variables) {
+  $icon_name = check_plain(arg(5));
   $output = '';
-  backdrop_set_title(t('Icon Browser'));
+  $title = (!empty($icon_name)) ? t('Icon: @icon', ['@icon' => $icon_name]) : t('Icon Browser');
+  backdrop_set_title($title);
+  $output .= '<div class="icon-browser">';
+  // Details (if needed).
+  if ($icon_name) {
+    $output .= '<div class="icon-detail messages">';
+    if (config_get('system.core', 'messages_dismissible')) {
+      // Add the 'Dismiss' library and place a 'Dismiss' link on icon details.
+      backdrop_add_library('system', 'backdrop.dismiss');
+      $output .= '<a href="#" class="button button--dismiss dismiss" title="' . t('Dismiss') . '"><span class="icon-close">' . t('Dismiss') . '</span></a>' . "\n";
+    }
+    $output .= '<div class="icon-image">'. icon($icon_name) . '</div>';
+    $output .= '<div class="icon-instructions">';
+    $output .= '<div class="icon-name"><strong>Icon name:</strong> <pre>' . $icon_name . '</pre></div>';
+    $output .= '<div class="icon-php"><strong>PHP:</strong> <pre>icon(\'' . $icon_name . '\');</pre></div>';
+    $output .= '<div class="icon-css"><strong>CSS:</strong> <pre>background-image: var(--icon-' . $icon_name . ');</pre></div>';
+    $output .= '<div class="icon-js"><strong>JavaScript:</strong> <pre>Backdrop.icons[\'' . $icon_name . '\']</pre></div>';
+    $output .= '</div></div>';
+  }
   // Filters.
   $output .= '<div class="icon-browser-filters">';
   $filters = backdrop_get_form('icon_browser_filters_form');
@@ -183,10 +202,11 @@ function theme_icon_browser_page($variables) {
       continue;
     }
     $output .= '<div class="icon-wrapper">';
-    $output .= '<a href="/admin/config/media/icon/' . $icon['name'] . '">';
+    $output .= '<a href="/admin/config/media/icons/browse/' . $icon['name'] . '">';
     $output .= '<div class="icon">' . icon($icon['name']) . '</div>';
-    $output .= $icon['name'] . '</a></div>';
+    $output .= '<div class="icon-name">' . $icon['name'] . '</div></a></div>';
   }
+  $output .= '</div>';
   $output .= '</div>';
   return $output;
 }
@@ -197,7 +217,8 @@ function theme_icon_browser_page($variables) {
 function icon_browser_view_icon(array $icon = []) {
   backdrop_add_css(backdrop_get_path('module', 'icon_browser') . '/css/icon_browser.css');
   backdrop_set_title(t('Icon: @icon', ['@icon' => $icon['name']]));
-  $output = '<div class="icon-detail">';
+  $output = '<div class="icon-browser">';
+  $output .= '<div class="icon-detail">';
   $output .= '<div class="icon-image">'. icon($icon['name']) . '</div>';
   $output .= '<div class="icon-instructions">';
   $output .= '<div class="icon-name"><strong>Icon name:</strong> <pre>' . $icon['name'] . '</pre></div>';
@@ -207,6 +228,7 @@ function icon_browser_view_icon(array $icon = []) {
   $output .= '</div></div>';
   $browser_page = icon_browser_page();
   $output .= render($browser_page);
+  $output .= '</div>';
   return $output;
 }
 

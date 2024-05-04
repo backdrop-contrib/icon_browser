@@ -12,25 +12,25 @@
 function icon_browser_menu() {
   $items = array();
 
-  $items['admin/config/media/icon'] = array(
+  $items['admin/config/media/icons'] = array(
     'title' => 'Icon browser',
     'page callback' => 'icon_browser_page',
     'access arguments' => array('access administration pages'),
     'file' => 'icon_browser.admin.inc',
     'type' => MENU_CALLBACK,
   );
-  $items['admin/config/media/icon/browse'] = array(
+  $items['admin/config/media/icons/browse'] = array(
     'title' => 'Icon browser',
     'description' => 'Browse available icons.',
     'page callback' => 'icon_browser_page',
     'access arguments' => array('access administration pages'),
     'file' => 'icon_browser.admin.inc',
   );
-  $items['admin/config/media/icon/%icon_browser'] = array(
+  $items['admin/config/media/icons/browse/%icon_browser'] = array(
     'title' => 'Icon',
     'description' => 'View a particular icon',
-    'page callback' => 'icon_browser_view_icon',
-    'page arguments' => array(4),
+    'page callback' => 'icon_browser_page',
+    'page arguments' => array(5),
     'access arguments' => array('access administration pages'),
     'file' => 'icon_browser.admin.inc',
     'type' => MENU_NORMAL_ITEM,

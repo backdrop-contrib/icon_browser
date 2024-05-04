@@ -12,8 +12,18 @@
   .icon-wrapper {
     width: 72px;
     display: inline-block;
-    font-size: .7rem;
     margin: .25rem;
+
+    a {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+
+      .icon-name {
+        color: unset;
+        font-size: .7rem;
+      }
+    }
 
     .icon {
       width: 36px;
@@ -40,21 +50,57 @@
   }
 }
 
-.icon-detail {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.icon-browser {
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
 
-  .icon-image {
-    grid-column: 1;
+  .icon-detail {
+    display: flex;
+
+    .icon-image {
+      width: 72px;
+      margin-right: 1.5rem;
+    }
+
+    .icon-instructions {
+      flex: 1;
+      display: flex;
+      flex-flow: row wrap;
+    }
+
+    .icon-name,
+    .icon-php,
+    .icon-js,
+    .icon-css {
+      padding: .5rem;
+      margin: 0 .5rem;
+      max-width: 50%;
+      min-width: 15%;
+    }
   }
 
-  .icon-instructions {
-    grid-column: 2;
-  }
-  .icon-name,
-  .icon-php,
-  .icon-js {
-    padding: 1rem 0;
+}
+
+.gin {
+  .icon-browser {
+    .icon-detail {
+      background-color: var(--gin-bg-app);
+      border-radius: var(--gin-border-l);
+      box-shadow: 0 6px 16px var(--gin-border-color-layer);
+
+      .icon-instructions {
+
+
+        .icon-name,
+        .icon-php,
+        .icon-js,
+        .icon-css {
+          background-color: var(--gin-bg-app2);
+          border-radius: 4px;
+          font-size: var(--gin-font-size-s);
+        }
+      }
+    }
   }
 }
