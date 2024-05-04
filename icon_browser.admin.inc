@@ -205,7 +205,8 @@ function icon_browser_view_icon(array $icon = []) {
   $output .= '<div class="icon-css"><strong>CSS:</strong> <pre>background-image: var(--icon-' . $icon['name'] . ');</pre></div>';
   $output .= '<div class="icon-js"><strong>JavaScript:</strong> <pre>Backdrop.icons[\'' . $icon['name'] . '\']</pre></div>';
   $output .= '</div></div>';
-  $output .= render(icon_browser_page());
+  $browser_page = icon_browser_page();
+  $output .= render($browser_page);
   return $output;
 }
 
