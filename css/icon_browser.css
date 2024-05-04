@@ -73,9 +73,10 @@
     .icon-php,
     .icon-js,
     .icon-css {
-      padding: .5rem;
+      padding: 1rem;
       margin: 0 .5rem;
-      max-width: 50%;
+      width: max-content;
+      max-width: 100%;
       min-width: 15%;
     }
   }
@@ -96,8 +97,9 @@
         .icon-php,
         .icon-js,
         .icon-css {
-          background-color: var(--gin-bg-app2);
-          border-radius: 4px;
+          background-color: var(--gin-bg-layer);
+          margin: var(--gin-spacing-xs);
+          border-radius: var(--gin-border-l);
           font-size: var(--gin-font-size-s);
         }
       }
