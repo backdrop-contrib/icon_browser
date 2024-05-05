@@ -48,3 +48,16 @@ function icon_browser_load($icon_name) {
     'path' => icon_get_path($icon_name),
   );
 }
+
+/**
+ * Implements hook_theme().
+ */
+function icon_browser_theme() {
+  return array(
+    'icon_browser_page' => array(
+      'variables' => array(
+        'icons' => array(),
+      ),
+    ),
+  );
+}

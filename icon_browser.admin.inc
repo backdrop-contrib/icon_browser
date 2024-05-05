@@ -52,19 +52,6 @@ function icon_browser_page() {
 }
 
 /**
- * Implements hook_theme().
- */
-function icon_browser_theme() {
-  return array(
-    'icon_browser_page' => array(
-      'variables' => array(
-        'icons' => array(),
-      ),
-    ),
-  );
-}
-
-/**
  * Form for filtering icons.
  *
  * @param array $form
