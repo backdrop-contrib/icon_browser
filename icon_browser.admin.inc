@@ -30,12 +30,12 @@ function icon_browser_page() {
   }
   // Module icons.
   $module_icons = icon_get_info();
-  foreach ($module_icons as $icon) {
+  foreach ($module_icons as $key => $icon) {
     $icons[$icon['name']] = array(
       'provider' => 'module',
+      'provider_key' => $key,
       'name' => $icon['name'],
       'fill' => substr($icon['name'], -5, 5) === '-fill',
-      'directory' => backdrop_get_path('module', $icon['module']) . '/icons',
     );
   }
   // @todo Theme icons.
@@ -190,31 +190,10 @@ function theme_icon_browser_page($variables) {
     }
     $output .= '<div class="icon-wrapper">';
     $output .= '<a href="/admin/config/media/icons/browse/' . $icon['name'] . '">';
-    $output .= '<div class="icon">' . icon($icon['name']) . '</div>';
+    $output .= '<div class="icon">' . icon($icon['provider_key']) . '</div>';
     $output .= '<div class="icon-name">' . $icon['name'] . '</div></a></div>';
   }
   $output .= '</div>';
-  $output .= '</div>';
-  return $output;
-}
-
-/**
- *
- */
-function icon_browser_view_icon(array $icon = []) {
-  backdrop_add_css(backdrop_get_path('module', 'icon_browser') . '/css/icon_browser.css');
-  backdrop_set_title(t('Icon: @icon', ['@icon' => $icon['name']]));
-  $output = '<div class="icon-browser">';
-  $output .= '<div class="icon-detail">';
-  $output .= '<div class="icon-image">'. icon($icon['name']) . '</div>';
-  $output .= '<div class="icon-instructions">';
-  $output .= '<div class="icon-name"><strong>Icon name:</strong> <pre>' . $icon['name'] . '</pre></div>';
-  $output .= '<div class="icon-php"><strong>PHP:</strong> <pre>icon(\'' . $icon['name'] . '\');</pre></div>';
-  $output .= '<div class="icon-css"><strong>CSS:</strong> <pre>background-image: var(--icon-' . $icon['name'] . ');</pre></div>';
-  $output .= '<div class="icon-js"><strong>JavaScript:</strong> <pre>Backdrop.icons[\'' . $icon['name'] . '\']</pre></div>';
-  $output .= '</div></div>';
-  $browser_page = icon_browser_page();
-  $output .= render($browser_page);
   $output .= '</div>';
   return $output;
 }

@@ -55,9 +55,11 @@ function icon_browser_load($icon_name) {
 function icon_browser_theme() {
   return array(
     'icon_browser_page' => array(
+      'file' => 'icon_browser.admin.inc',
       'variables' => array(
         'icons' => array(),
       ),
     ),
   );
 }
+
