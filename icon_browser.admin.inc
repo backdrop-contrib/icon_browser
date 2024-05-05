@@ -22,6 +22,7 @@ function icon_browser_page() {
       $icon_name = substr($icon, 0, -4);
       $icons[$icon_name] = array(
         'provider' => 'core',
+        'provider_key' => $icon_name,
         'name' => $icon_name,
         'fill' => substr($icon_name, -5, 5) === '-fill',
         'directory' => ICON_BROWSER_PATH,
