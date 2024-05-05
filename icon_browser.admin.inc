@@ -157,7 +157,7 @@ function theme_icon_browser_page($variables) {
     if (config_get('system.core', 'messages_dismissible')) {
       // Add the 'Dismiss' library and place a 'Dismiss' link on icon details.
       backdrop_add_library('system', 'backdrop.dismiss');
-      $output .= '<a href="#" class="button button--dismiss dismiss" title="' . t('Dismiss') . '"><span class="icon-close">' . t('Dismiss') . '</span></a>' . "\n";
+      $output .= '<a href="#" class="button button--dismiss dismiss" title="' . t('Dismiss') . '"><span class="element-invisible icon-close">' . t('Dismiss') . '</span></a>' . "\n";
     }
     $output .= '<div class="icon-image">'. icon($icon_name) . '</div>';
     $output .= '<div class="icon-instructions">';
@@ -189,7 +189,7 @@ function theme_icon_browser_page($variables) {
       continue;
     }
     $output .= '<div class="icon-wrapper">';
-    $output .= '<a href="/admin/config/media/icons/browse/' . $icon['name'] . '">';
+    $output .= '<a href="/admin/config/media/icons/browse/' . $icon['provider_key'] . '">';
     $output .= '<div class="icon">' . icon($icon['provider_key']) . '</div>';
     $output .= '<div class="icon-name">' . $icon['name'] . '</div></a></div>';
   }
