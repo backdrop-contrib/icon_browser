@@ -61,6 +61,7 @@
     .icon-image {
       width: 72px;
       margin-right: 1.5rem;
+      display: flex;
     }
 
     .icon-instructions {
