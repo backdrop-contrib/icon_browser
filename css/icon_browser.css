@@ -29,23 +29,33 @@
       width: 36px;
       margin: 0 auto;
     }
-  }
 
-  &[data-icon-size="small"] {
-    .icon-wrapper .icon {
-      width: 24px;
+    &.icon-error:before {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 28px;
+      margin: .5rem auto;
+      background-color: #9C1D0D;
+      mask-image: var(--icon-seal-warning-fill);
     }
-  }
 
-  &[data-icon-size="large"] {
-    .icon-wrapper .icon {
-      width: 48px;
+    &[data-icon-size="small"] {
+      .icon-wrapper .icon {
+        width: 24px;
+      }
     }
-  }
 
-  &[data-icon-size="xlarge"] {
-    .icon-wrapper .icon {
-      width: 56px;
+    &[data-icon-size="large"] {
+      .icon-wrapper .icon {
+        width: 48px;
+      }
+    }
+
+    &[data-icon-size="xlarge"] {
+      .icon-wrapper .icon {
+        width: 56px;
+      }
     }
   }
 }
@@ -62,6 +72,10 @@
       width: 72px;
       margin-right: 1.5rem;
       display: flex;
+
+      &.error {
+        color: #9C1D0D;
+      }
     }
 
     .icon-instructions {
@@ -81,7 +95,6 @@
       min-width: 15%;
     }
   }
-
 }
 
 .gin {
@@ -91,9 +104,11 @@
       border-radius: var(--gin-border-l);
       box-shadow: 0 6px 16px var(--gin-border-color-layer);
 
+      .icon-image.error {
+        color: var(--gin-color-danger);
+      }
+
       .icon-instructions {
-
-
         .icon-name,
         .icon-php,
         .icon-js,
@@ -104,6 +119,10 @@
           font-size: var(--gin-font-size-s);
         }
       }
+    }
+
+    .icon-wrapper.icon-error:before {
+      background-color: var(--gin-color-danger);
     }
   }
 }

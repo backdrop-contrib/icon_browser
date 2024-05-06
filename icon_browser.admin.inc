@@ -122,6 +122,7 @@ function icon_browser_filters_form_submit($form, &$form_state) {
  * Theme hook for the icon browser page.
  */
 function theme_icon_browser_page($variables) {
+  backdrop_add_icons(array('seal-warning-fill'));
   $icon_key = check_plain(arg(5));
   $output = '';
   $title = (!empty($icon_key)) ? t('Icon: @icon', ['@icon' => $icon_key]) : t('Icon Browser');
@@ -136,7 +137,12 @@ function theme_icon_browser_page($variables) {
       backdrop_add_library('system', 'backdrop.dismiss');
       $output .= '<a href="#" class="button button--dismiss dismiss" title="' . t('Dismiss') . '"><span class="icon-close"></span></a>' . "\n";
     }
-    $output .= '<div class="icon-image">'. icon($icon_key) . '</div>';
+    if (!$icon_details['error']) {
+      $output .= '<div class="icon-image">'. icon($icon_key) . '</div>';
+    }
+    else {
+      $output .= '<div class="icon-image error">'. icon('seal-warning-fill') . '</div>';
+    }
     $output .= '<div class="icon-instructions">';
     $output .= '<div class="icon-name"><strong>Icon name:</strong> ' . $icon_key . '<br>';
     $output .= 'Provided by ' . $icon_details['provider_detail'] . '</div>';
@@ -166,7 +172,8 @@ function theme_icon_browser_page($variables) {
     if ($keyword && strpos($icon['name'], $keyword) === FALSE) {
       continue;
     }
-    $output .= '<div class="icon-wrapper">';
+    $error_class = (!empty($icon['error'])) ? ' icon-error' : '';
+    $output .= '<div class="icon-wrapper' . $error_class . '">';
     $output .= '<a href="/admin/config/media/icons/browse/' . $icon['provider_key'] . '">';
     $output .= '<div class="icon">' . icon($icon['provider_key']) . '</div>';
     $output .= '<div class="icon-name">' . $icon['name'] . '</div></a></div>';
@@ -227,7 +234,9 @@ function icon_browser_icon_details($icon_key = '') {
   }
   // Icons provided by themes.
   $themes = list_themes();
+  $active_theme = $GLOBALS['theme_key'];
   foreach ($themes as $theme => $theme_data) {
+    $error = ($theme != $active_theme);
     // Check if the theme provides a non-default icon path.
     $theme_icon_directory = theme_get_setting('icon_directory', $theme);
 
@@ -243,11 +252,12 @@ function icon_browser_icon_details($icon_key = '') {
           $icon_name = substr($icon, 0, -4);
           $icons[$icon_name] = array(
             'provider' => 'theme',
-            'provider_detail' => t('theme: @theme', ['@theme' => $theme]),
+            'provider_detail' => t('theme: @theme* <br><br><em>*Theme-provided icons may only be available when the theme is active.</em>', ['@theme' => $theme]),
             'provider_key' => $icon_name,
             'name' => $icon_name,
             'fill' => substr($icon_name, -5, 5) === '-fill',
             'directory' => $theme_directory,
+            'error' => $error,
           );
         }
       }
