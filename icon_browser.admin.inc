@@ -13,33 +13,7 @@
  */
 function icon_browser_page() {
   $output = array();
-  // @todo caching.
-  $icons = [];
-  // Core icons.
-  $core_icons = scandir(ICON_BROWSER_PATH);
-  foreach ($core_icons as $icon) {
-    if (substr($icon, -4, 4) == '.svg') {
-      $icon_name = substr($icon, 0, -4);
-      $icons[$icon_name] = array(
-        'provider' => 'core',
-        'provider_key' => $icon_name,
-        'name' => $icon_name,
-        'fill' => substr($icon_name, -5, 5) === '-fill',
-        'directory' => ICON_BROWSER_PATH,
-      );
-    }
-  }
-  // Module icons.
-  $module_icons = icon_get_info();
-  foreach ($module_icons as $key => $icon) {
-    $icons[$icon['name']] = array(
-      'provider' => 'module',
-      'provider_key' => $key,
-      'name' => $icon['name'],
-      'fill' => substr($icon['name'], -5, 5) === '-fill',
-    );
-  }
-  // @todo Theme icons.
+  $icons = icon_browser_icon_details();
   $output = array(
     '#theme' => 'icon_browser_page',
     '#icons' => $icons,
@@ -147,25 +121,27 @@ function icon_browser_filters_form_submit($form, &$form_state) {
  * Theme hook for the icon browser page.
  */
 function theme_icon_browser_page($variables) {
-  $icon_name = check_plain(arg(5));
+  $icon_key = check_plain(arg(5));
   $output = '';
-  $title = (!empty($icon_name)) ? t('Icon: @icon', ['@icon' => $icon_name]) : t('Icon Browser');
+  $title = (!empty($icon_key)) ? t('Icon: @icon', ['@icon' => $icon_key]) : t('Icon Browser');
   backdrop_set_title($title);
   $output .= '<div class="icon-browser">';
   // Details (if needed).
-  if ($icon_name) {
+  if ($icon_key) {
+    $icon_details = icon_browser_icon_details($icon_key);
     $output .= '<div class="icon-detail messages">';
     if (config_get('system.core', 'messages_dismissible')) {
       // Add the 'Dismiss' library and place a 'Dismiss' link on icon details.
       backdrop_add_library('system', 'backdrop.dismiss');
       $output .= '<a href="#" class="button button--dismiss dismiss" title="' . t('Dismiss') . '"><span class="icon-close"></span></a>' . "\n";
     }
-    $output .= '<div class="icon-image">'. icon($icon_name) . '</div>';
+    $output .= '<div class="icon-image">'. icon($icon_key) . '</div>';
     $output .= '<div class="icon-instructions">';
-    $output .= '<div class="icon-name"><strong>Icon name:</strong> <pre>' . $icon_name . '</pre></div>';
-    $output .= '<div class="icon-php"><strong>PHP:</strong> <pre>icon(\'' . $icon_name . '\');</pre></div>';
-    $output .= '<div class="icon-css"><strong>CSS:</strong> <pre>background-image: var(--icon-' . $icon_name . ');</pre></div>';
-    $output .= '<div class="icon-js"><strong>JavaScript:</strong> <pre>Backdrop.icons[\'' . $icon_name . '\']</pre></div>';
+    $output .= '<div class="icon-name"><strong>Icon name:</strong> ' . $icon_key . '<br>';
+    $output .= 'Provided by ' . $icon_details['provider_detail'] . '</div>';
+    $output .= '<div class="icon-php"><strong>PHP:</strong> <pre>icon(\'' . $icon_key . '\');</pre></div>';
+    $output .= '<div class="icon-css"><strong>CSS:</strong> <pre>background-image: var(--icon-' . $icon_key . ');</pre></div>';
+    $output .= '<div class="icon-js"><strong>JavaScript:</strong> <pre>Backdrop.icons[\'' . $icon_key . '\']</pre></div>';
     $output .= '</div></div>';
   }
   // Filters.
@@ -208,4 +184,47 @@ function theme_icon_browser_page($variables) {
  */
 function icon_browser_get_filter_value($filter_name) {
   return (!empty($_SESSION['icon_browser'][$filter_name])) ? $_SESSION['icon_browser'][$filter_name] : config_get('icon_browser.settings', $filter_name);
+}
+
+
+/**
+ * Helper function to load icon details.
+ *
+ * @param string $icon_key
+ *   The icon key to load details for. If empty, load all icons.
+ * @return array
+ *   An array of icon details, keyed by icon key.
+ */
+function icon_browser_icon_details($icon_key = '') {
+  // @todo caching.
+  $icons = [];
+  // Core icons.
+  $core_icons = scandir(ICON_BROWSER_PATH);
+  foreach ($core_icons as $icon) {
+    if (substr($icon, -4, 4) == '.svg') {
+      $icon_name = substr($icon, 0, -4);
+      $icons[$icon_name] = array(
+        'provider' => 'core',
+        'provider_detail' => t('Core'),
+        'provider_key' => $icon_name,
+        'name' => $icon_name,
+        'fill' => substr($icon_name, -5, 5) === '-fill',
+        'directory' => ICON_BROWSER_PATH,
+      );
+    }
+  }
+  // Module icons.
+  $module_icons = icon_get_info();
+  foreach ($module_icons as $key => $icon) {
+    $icons[$key] = array(
+      'provider' => 'module',
+      'provider_detail' => t('Module: @module', ['@module' => $icon['module']]),
+      'provider_key' => $key,
+      'name' => $icon['name'],
+      'fill' => substr($icon['name'], -5, 5) === '-fill',
+    );
+  }
+  // @todo Theme icons.
+
+  return (!empty($icon_key) && isset($icons[$icon_key])) ? $icons[$icon_key] : $icons;
 }
