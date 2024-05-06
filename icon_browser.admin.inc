@@ -44,6 +44,7 @@ function icon_browser_filters_form($form, &$form_state) {
         'any' => t('Any'),
         'core' => t('Core'),
         'module' => t('Module'),
+        'theme' => t('Theme'),
       ),
       '#default_value' => icon_browser_get_filter_value('provider'),
     ),
@@ -198,14 +199,14 @@ function icon_browser_get_filter_value($filter_name) {
 function icon_browser_icon_details($icon_key = '') {
   // @todo caching.
   $icons = [];
-  // Core icons.
+  // Icons provided by Backdrop core.
   $core_icons = scandir(ICON_BROWSER_PATH);
   foreach ($core_icons as $icon) {
     if (substr($icon, -4, 4) == '.svg') {
       $icon_name = substr($icon, 0, -4);
       $icons[$icon_name] = array(
         'provider' => 'core',
-        'provider_detail' => t('Core'),
+        'provider_detail' => t('Backdrop core'),
         'provider_key' => $icon_name,
         'name' => $icon_name,
         'fill' => substr($icon_name, -5, 5) === '-fill',
@@ -213,18 +214,44 @@ function icon_browser_icon_details($icon_key = '') {
       );
     }
   }
-  // Module icons.
+  // Icons provided by modules.
   $module_icons = icon_get_info();
   foreach ($module_icons as $key => $icon) {
     $icons[$key] = array(
       'provider' => 'module',
-      'provider_detail' => t('Module: @module', ['@module' => $icon['module']]),
+      'provider_detail' => t('module: @module', ['@module' => $icon['module']]),
       'provider_key' => $key,
       'name' => $icon['name'],
       'fill' => substr($icon['name'], -5, 5) === '-fill',
     );
   }
-  // @todo Theme icons.
+  // Icons provided by themes.
+  $themes = list_themes();
+  foreach ($themes as $theme => $theme_data) {
+    // Check if the theme provides a non-default icon path.
+    $theme_icon_directory = theme_get_setting('icon_directory', $theme);
 
+    // Otherwise just check in the theme "icons" directory.
+    if (!$theme_icon_directory) {
+      $theme_icon_directory = 'icons';
+    }
+    $theme_directory = backdrop_get_path('theme', $theme) . '/' . $theme_icon_directory;
+    $theme_icons = scandir($theme_directory);
+    if (!empty($theme_icons)) {
+      foreach ($theme_icons as $key => $icon) {
+        if (substr($icon, -4, 4) == '.svg') {
+          $icon_name = substr($icon, 0, -4);
+          $icons[$icon_name] = array(
+            'provider' => 'theme',
+            'provider_detail' => t('theme: @theme', ['@theme' => $theme]),
+            'provider_key' => $icon_name,
+            'name' => $icon_name,
+            'fill' => substr($icon_name, -5, 5) === '-fill',
+            'directory' => $theme_directory,
+          );
+        }
+      }
+    }
+  }
   return (!empty($icon_key) && isset($icons[$icon_key])) ? $icons[$icon_key] : $icons;
 }
