@@ -168,7 +168,7 @@ function theme_icon_browser_page($variables) {
     }
     $output .= '<div class="icon-instructions">';
     $output .= '<div class="icon-name"><strong>Icon name:</strong> ' . $icon_key . '<br>';
-    $output .= 'Provided by ' . $icon_details['provider_detail'] . '</div>';
+    $output .= '<strong>Provided by:</strong> ' . $icon_details['provider_detail'] . '</div>';
     $output .= '<div class="icon-php"><strong>PHP:</strong> <pre>icon(\'' . $icon_key . '\');</pre></div>';
     $output .= '<div class="icon-css"><strong>CSS:</strong> <pre>background-image: var(--icon-' . $icon_key . ');</pre></div>';
     $output .= '<div class="icon-js"><strong>JavaScript:</strong> <pre>Backdrop.icons[\'' . $icon_key . '\']</pre></div>';
@@ -245,7 +245,7 @@ function icon_browser_icon_details($icon_key = '') {
   foreach ($module_icons as $key => $icon) {
     $icons[$key] = array(
       'provider' => 'module',
-      'provider_detail' => t('module: @module', ['@module' => $icon['module']]),
+      'provider_detail' => t('@module (module)', ['@module' => $icon['module']]),
       'provider_key' => $key,
       'name' => $icon['name'],
       'fill' => substr($icon['name'], -5, 5) === '-fill',
@@ -272,7 +272,7 @@ function icon_browser_icon_details($icon_key = '') {
             $icon_name = substr($icon, 0, -4);
             $icons[$icon_name] = array(
               'provider' => 'theme',
-              'provider_detail' => t('theme: @theme* <br><br><em>*Theme-provided icons may only be available when the theme is active.</em>', ['@theme' => $theme]),
+              'provider_detail' => t('@theme (theme*) <br><br><em>*Theme-provided icons may only be available when the theme is active.</em>', ['@theme' => $theme]),
               'provider_key' => $icon_name,
               'name' => $icon_name,
               'fill' => substr($icon_name, -5, 5) === '-fill',
