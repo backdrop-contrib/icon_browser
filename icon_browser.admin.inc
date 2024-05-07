@@ -154,25 +154,27 @@ function theme_icon_browser_page($variables) {
   // Details (if needed).
   if ($icon_key && $results) {
     $icon_details = icon_browser_icon_details($icon_key);
-    $output .= '<div class="icon-detail messages">';
-    if (config_get('system.core', 'messages_dismissible')) {
-      // Add the 'Dismiss' library and place a 'Dismiss' link on icon details.
-      backdrop_add_library('system', 'backdrop.dismiss');
-      $output .= '<a href="#" class="button button--dismiss dismiss" title="' . t('Dismiss') . '"><span class="icon-close"></span></a>' . "\n";
+    if (!empty($icon_details)) {
+      $output .= '<div class="icon-detail messages">';
+      if (config_get('system.core', 'messages_dismissible')) {
+        // Add the 'Dismiss' library and place a 'Dismiss' link on icon details.
+        backdrop_add_library('system', 'backdrop.dismiss');
+        $output .= '<a href="#" class="button button--dismiss dismiss" title="' . t('Dismiss') . '"><span class="icon-close"></span></a>' . "\n";
+      }
+      if (!$icon_details['error']) {
+        $output .= '<div class="icon-image">'. icon($icon_key) . '</div>';
+      }
+      else {
+        $output .= '<div class="icon-image error">'. icon('seal-warning-fill') . '</div>';
+      }
+      $output .= '<div class="icon-instructions">';
+      $output .= '<div class="icon-name"><strong>Icon name:</strong> ' . $icon_key . '<br>';
+      $output .= '<strong>Provided by:</strong> ' . $icon_details['provider_detail'] . '</div>';
+      $output .= '<div class="icon-php"><strong>PHP:</strong> <pre>icon(\'' . $icon_key . '\');</pre></div>';
+      $output .= '<div class="icon-css"><strong>CSS:</strong> <pre>background-image: var(--icon-' . $icon_key . ');</pre></div>';
+      $output .= '<div class="icon-js"><strong>JavaScript:</strong> <pre>Backdrop.icons[\'' . $icon_key . '\']</pre></div>';
+      $output .= '</div></div>';
     }
-    if (!$icon_details['error']) {
-      $output .= '<div class="icon-image">'. icon($icon_key) . '</div>';
-    }
-    else {
-      $output .= '<div class="icon-image error">'. icon('seal-warning-fill') . '</div>';
-    }
-    $output .= '<div class="icon-instructions">';
-    $output .= '<div class="icon-name"><strong>Icon name:</strong> ' . $icon_key . '<br>';
-    $output .= '<strong>Provided by:</strong> ' . $icon_details['provider_detail'] . '</div>';
-    $output .= '<div class="icon-php"><strong>PHP:</strong> <pre>icon(\'' . $icon_key . '\');</pre></div>';
-    $output .= '<div class="icon-css"><strong>CSS:</strong> <pre>background-image: var(--icon-' . $icon_key . ');</pre></div>';
-    $output .= '<div class="icon-js"><strong>JavaScript:</strong> <pre>Backdrop.icons[\'' . $icon_key . '\']</pre></div>';
-    $output .= '</div></div>';
   }
   // Filters.
   $output .= '<div class="icon-browser-filters">';
@@ -186,7 +188,7 @@ function theme_icon_browser_page($variables) {
     foreach ($chunks[$current_page] as $icon) {
       $error_class = (!empty($icon['error'])) ? ' icon-error' : '';
       $output .= '<div class="icon-wrapper' . $error_class . '">';
-      $url = url('admin/config/media/icons/browse/' . $icon['name'], array('query' => array('page' => $current_page)));
+      $url = url('admin/config/media/icons/browse/' . $icon['provider_key'], array('query' => array('page' => $current_page)));
       $output .= '<a href="' . $url . '">';
       $output .= '<div class="icon">' . icon($icon['provider_key']) . '</div>';
       $output .= '<div class="icon-name">' . $icon['name'] . '</div></a></div>';
@@ -220,7 +222,10 @@ function icon_browser_get_filter_value($filter_name) {
  * @param string $icon_key
  *   The icon key to load details for. If empty, load all icons.
  * @return array
- *   An array of icon details, keyed by icon key.
+ *   An array of icon details, keyed by icon key:
+ *    - All icons, if no $icon_key was provided
+ *    - The single result if an $icon_key was provided, or
+ *    - An empty array if no icon was found for a provided $icon_key.
  */
 function icon_browser_icon_details($icon_key = '') {
   // @todo caching.
@@ -284,5 +289,14 @@ function icon_browser_icon_details($icon_key = '') {
       }
     }
   }
-  return (!empty($icon_key) && isset($icons[$icon_key])) ? $icons[$icon_key] : $icons;
+  if (empty($icon_key)) {
+    $result = $icons;
+  }
+  elseif (isset($icons[$icon_key])) {
+    $result = $icons[$icon_key];
+  }
+  else {
+    $result = [];
+  }
+  return $result;
 }
