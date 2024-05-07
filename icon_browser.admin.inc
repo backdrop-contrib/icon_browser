@@ -245,20 +245,22 @@ function icon_browser_icon_details($icon_key = '') {
       $theme_icon_directory = 'icons';
     }
     $theme_directory = backdrop_get_path('theme', $theme) . '/' . $theme_icon_directory;
-    $theme_icons = scandir($theme_directory);
-    if (!empty($theme_icons)) {
-      foreach ($theme_icons as $key => $icon) {
-        if (substr($icon, -4, 4) == '.svg') {
-          $icon_name = substr($icon, 0, -4);
-          $icons[$icon_name] = array(
-            'provider' => 'theme',
-            'provider_detail' => t('theme: @theme* <br><br><em>*Theme-provided icons may only be available when the theme is active.</em>', ['@theme' => $theme]),
-            'provider_key' => $icon_name,
-            'name' => $icon_name,
-            'fill' => substr($icon_name, -5, 5) === '-fill',
-            'directory' => $theme_directory,
-            'error' => $error,
-          );
+    if (is_dir($theme_directory)) {
+      $theme_icons = scandir($theme_directory);
+      if (!empty($theme_icons)) {
+        foreach ($theme_icons as $key => $icon) {
+          if (substr($icon, -4, 4) == '.svg') {
+            $icon_name = substr($icon, 0, -4);
+            $icons[$icon_name] = array(
+              'provider' => 'theme',
+              'provider_detail' => t('theme: @theme* <br><br><em>*Theme-provided icons may only be available when the theme is active.</em>', ['@theme' => $theme]),
+              'provider_key' => $icon_name,
+              'name' => $icon_name,
+              'fill' => substr($icon_name, -5, 5) === '-fill',
+              'directory' => $theme_directory,
+              'error' => $error,
+            );
+          }
         }
       }
     }
