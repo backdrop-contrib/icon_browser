@@ -5,6 +5,8 @@
  *
  */
 
+define ('ICON_BROWSER_PER_PAGE', 110);
+
 /**
  * Display the page of icons with filters.
  *
@@ -141,9 +143,8 @@ function theme_icon_browser_page($variables) {
     }
     $results[] = $icon;
   }
-  $per_page = 110;
-  $current_page = pager_default_initialize(count($results), $per_page);
-  $chunks = array_chunk($results, $per_page, TRUE);
+  $current_page = pager_default_initialize(count($results), ICON_BROWSER_PER_PAGE);
+  $chunks = array_chunk($results, ICON_BROWSER_PER_PAGE, TRUE);
 
   $output = '';
   $title = (!empty($icon_key)) ? t('Icon: @icon', ['@icon' => $icon_key]) : t('Icon Browser');
