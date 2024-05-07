@@ -108,7 +108,6 @@ function icon_browser_filters_form_submit($form, &$form_state) {
       $config = config('icon_browser.settings');
       $config->set('provider', $form_state['values']['provider']);
       $config->set('style', $form_state['values']['style']);
-      $config->set('keyword', $form_state['values']['keyword']);
       $config->set('size', $form_state['values']['size']);
       $config->save();
       backdrop_set_message(t('Defaults saved.'));
@@ -118,6 +117,8 @@ function icon_browser_filters_form_submit($form, &$form_state) {
     $_SESSION['icon_browser']['keyword'] = $form_state['values']['keyword'];
     $_SESSION['icon_browser']['size'] = $form_state['values']['size'];
   }
+  // Redirect back to the main form to remove any detail view.
+  $form_state['redirect'] = 'admin/config/media/icons/browse';
 }
 
   /**
