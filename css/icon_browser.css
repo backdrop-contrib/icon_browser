@@ -28,6 +28,11 @@
     .icon {
       width: 36px;
       margin: 0 auto;
+
+      svg {
+        width: 36px;
+        height: 36px;
+      }
     }
 
     &.icon-error:before {
@@ -42,19 +47,34 @@
 
     &[data-icon-size="small"] {
       .icon-wrapper .icon {
-        width: 24px;
+
+        &,
+        & svg {
+          width: 24px;
+          height: 24px;
+        }
       }
     }
 
     &[data-icon-size="large"] {
       .icon-wrapper .icon {
-        width: 48px;
+
+        &,
+        & svg {
+          width: 48px;
+          height: 48px;
+        }
       }
     }
 
     &[data-icon-size="xlarge"] {
       .icon-wrapper .icon {
-        width: 56px;
+
+        &,
+        & svg {
+          width: 64px;
+          height: 64px;
+        }
       }
     }
   }
@@ -70,8 +90,16 @@
 
     .icon-image {
       width: 72px;
+      padding: 1.5rem 0;
       margin-right: 1.5rem;
+      margin-left: .5rem;
       display: flex;
+
+      svg {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto;
+      }
 
       &.error {
         color: #9C1D0D;
@@ -109,6 +137,7 @@
       }
 
       .icon-instructions {
+
         .icon-name,
         .icon-php,
         .icon-js,
