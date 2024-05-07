@@ -124,12 +124,33 @@ function icon_browser_filters_form_submit($form, &$form_state) {
 function theme_icon_browser_page($variables) {
   backdrop_add_icons(array('seal-warning-fill'));
   $icon_key = check_plain(arg(5));
+  $provider = icon_browser_get_filter_value('provider');
+  $style = icon_browser_get_filter_value('style');
+  $keyword = icon_browser_get_filter_value('keyword');
+  $size = icon_browser_get_filter_value('size');
+  $results = array();
+  foreach ($variables['icons'] as $icon) {
+    if ($provider != 'any' && $icon['provider'] != $provider) {
+      continue;
+    }
+    if ($style != 'any' && (($icon['fill'] && $style != 'fill') || (!$icon['fill'] && $style != 'outline'))) {
+      continue;
+    }
+    if ($keyword && strpos($icon['name'], $keyword) === FALSE) {
+      continue;
+    }
+    $results[] = $icon;
+  }
+  $per_page = 110;
+  $current_page = pager_default_initialize(count($results), $per_page);
+  $chunks = array_chunk($results, $per_page, TRUE);
+
   $output = '';
   $title = (!empty($icon_key)) ? t('Icon: @icon', ['@icon' => $icon_key]) : t('Icon Browser');
   backdrop_set_title($title);
   $output .= '<div class="icon-browser">';
   // Details (if needed).
-  if ($icon_key) {
+  if ($icon_key && $results) {
     $icon_details = icon_browser_icon_details($icon_key);
     $output .= '<div class="icon-detail messages">';
     if (config_get('system.core', 'messages_dismissible')) {
@@ -157,29 +178,25 @@ function theme_icon_browser_page($variables) {
   $output .= render($filters);
   $output .= '</div>';
   // Icons.
-  $provider = icon_browser_get_filter_value('provider');
-  $style = icon_browser_get_filter_value('style');
-  $keyword = icon_browser_get_filter_value('keyword');
-  $size = icon_browser_get_filter_value('size');
-  $output .= "<div class='icon-browser-list' data-icon-provider='$provider' data-icon-style='$style' data-icon-size='$size'>";
-  foreach ($variables['icons'] as $icon) {
-    if ($provider != 'any' && $icon['provider'] != $provider) {
-      continue;
+  if ($results) {
+    $output .= "<div class='icon-browser-list' data-icon-provider='$provider' data-icon-style='$style' data-icon-size='$size'>";
+
+    foreach ($chunks[$current_page] as $icon) {
+      $error_class = (!empty($icon['error'])) ? ' icon-error' : '';
+      $output .= '<div class="icon-wrapper' . $error_class . '">';
+      $url = url('admin/config/media/icons/browse/' . $icon['name'], array('query' => array('page' => $current_page)));
+      $output .= '<a href="' . $url . '">';
+      $output .= '<div class="icon">' . icon($icon['provider_key']) . '</div>';
+      $output .= '<div class="icon-name">' . $icon['name'] . '</div></a></div>';
     }
-    if ($style != 'any' && (($icon['fill'] && $style != 'fill') || (!$icon['fill'] && $style != 'outline'))) {
-      continue;
-    }
-    if ($keyword && strpos($icon['name'], $keyword) === FALSE) {
-      continue;
-    }
-    $error_class = (!empty($icon['error'])) ? ' icon-error' : '';
-    $output .= '<div class="icon-wrapper' . $error_class . '">';
-    $output .= '<a href="/admin/config/media/icons/browse/' . $icon['provider_key'] . '">';
-    $output .= '<div class="icon">' . icon($icon['provider_key']) . '</div>';
-    $output .= '<div class="icon-name">' . $icon['name'] . '</div></a></div>';
+    $output .= '</div>';
+  }
+  else {
+    $output .= t('No icons match the filter criteria.');
   }
   $output .= '</div>';
-  $output .= '</div>';
+  $output .= theme('pager', array('quantity', count($results)));
+
   return $output;
 }
 
