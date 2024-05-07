@@ -139,7 +139,8 @@ function theme_icon_browser_page($variables) {
     if ($style != 'any' && (($icon['fill'] && $style != 'fill') || (!$icon['fill'] && $style != 'outline'))) {
       continue;
     }
-    if ($keyword && strpos($icon['name'], $keyword) === FALSE) {
+    $searchtext = implode(' ', $icon);
+    if ($keyword && strpos($searchtext, $keyword) === FALSE) {
       continue;
     }
     $results[] = $icon;
