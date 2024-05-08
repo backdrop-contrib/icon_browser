@@ -45,36 +45,37 @@
       mask-image: var(--icon-seal-warning-fill);
     }
 
-    &[data-icon-size="small"] {
-      .icon-wrapper .icon {
+  }
 
-        &,
-        & svg {
-          width: 24px;
-          height: 24px;
-        }
+  &[data-icon-size="small"] {
+    .icon-wrapper .icon {
+
+      &,
+      & svg {
+        width: 24px;
+        height: 24px;
       }
     }
+  }
 
-    &[data-icon-size="large"] {
-      .icon-wrapper .icon {
+  &[data-icon-size="large"] {
+    .icon-wrapper .icon {
 
-        &,
-        & svg {
-          width: 48px;
-          height: 48px;
-        }
+      &,
+      & svg {
+        width: 48px;
+        height: 48px;
       }
     }
+  }
 
-    &[data-icon-size="xlarge"] {
-      .icon-wrapper .icon {
+  &[data-icon-size="xlarge"] {
+    .icon-wrapper .icon {
 
-        &,
-        & svg {
-          width: 64px;
-          height: 64px;
-        }
+      &,
+      & svg {
+        width: 64px;
+        height: 64px;
       }
     }
   }
