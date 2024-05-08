@@ -44,7 +44,6 @@
       background-color: #9C1D0D;
       mask-image: var(--icon-seal-warning-fill);
     }
-
   }
 
   &[data-icon-size="small"] {
@@ -86,8 +85,21 @@
   flex-direction: column;
   gap: 1.5rem;
 
-  .icon-detail {
+  .icon-browser-detail {
     display: flex;
+
+    .icon-name {
+      padding-top: 0;
+
+      label {
+        display: inline-block;
+      }
+
+      h2 {
+        margin: 0;
+        padding: 0;
+      }
+    }
 
     .icon-image {
       width: 72px;
@@ -123,12 +135,38 @@
       max-width: 100%;
       min-width: 15%;
     }
+
+
   }
 }
 
+.icon-browser-detail .icon-js label::after,
+.icon-browser-detail .icon-css label::after,
+.icon-browser-detail .icon-status strong::after,
+.icon-wrapper[data-icon-active="true"] .icon-name::after,
+.icon-browser-ready::after {
+  content: '';
+  display: inline-block;
+  margin-left: .25rem;
+  mask-image: var(--icon-warning-circle-fill);
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  width: 1rem;
+  height: .75rem;
+  background-color: #fce400;
+}
+
+.icon-wrapper[data-icon-active="true"] .icon-name::after,
+.icon-browser-detail[data-icon-active="true"] .icon-js label::after,
+.icon-browser-detail[data-icon-active="true"] .icon-css label::after,
+.icon-browser-detail[data-icon-active="true"] .icon-status strong::after,
+.icon-browser-ready::after {
+  background-color: #234600;
+  mask-image: var(--icon-check-circle-fill);}
+
 .gin {
   .icon-browser {
-    .icon-detail {
+    .icon-browser-detail {
       background-color: var(--gin-bg-app);
       border-radius: var(--gin-border-l);
       box-shadow: 0 6px 16px var(--gin-border-color-layer);
@@ -154,5 +192,19 @@
     .icon-wrapper.icon-error:before {
       background-color: var(--gin-color-danger);
     }
+  }
+
+  .icon-browser-detail .icon-js label::after,
+  .icon-browser-detail .icon-css label::after,
+  .icon-browser-detail .icon-status strong::after {
+    background-color: var(--gin-color-warning);
+  }
+
+  .icon-wrapper[data-icon-active="true"] .icon-name::after,
+  .icon-browser-detail[data-icon-active="true"] .icon-js label::after,
+  .icon-browser-detail[data-icon-active="true"] .icon-css label::after,
+  .icon-browser-detail[data-icon-active="true"] .icon-status strong::after,
+  .icon-browser-ready::after {
+    background-color: var(--gin-color-green-light);
   }
 }

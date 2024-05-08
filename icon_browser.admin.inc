@@ -156,7 +156,7 @@ function theme_icon_browser_page($variables) {
   if ($icon_key && $results) {
     $icon_details = icon_browser_icon_details($icon_key);
     if (!empty($icon_details)) {
-      $output .= '<div class="icon-detail messages">';
+      $output .= '<div class="icon-browser-detail messages" data-icon-name="' . $icon_key . '" data-icon-active="false">';
       if (config_get('system.core', 'messages_dismissible')) {
         // Add the 'Dismiss' library and place a 'Dismiss' link on icon details.
         backdrop_add_library('system', 'backdrop.dismiss');
@@ -169,11 +169,13 @@ function theme_icon_browser_page($variables) {
         $output .= '<div class="icon-image error">'. icon('seal-warning-fill') . '</div>';
       }
       $output .= '<div class="icon-instructions">';
-      $output .= '<div class="icon-name"><strong>Icon name:</strong> ' . $icon_key . '<br>';
-      $output .= '<strong>Provided by:</strong> ' . $icon_details['provider_detail'] . '</div>';
-      $output .= '<div class="icon-php"><strong>PHP:</strong> <pre>icon(\'' . $icon_key . '\');</pre></div>';
-      $output .= '<div class="icon-css"><strong>CSS:</strong> <pre>background-image: var(--icon-' . $icon_key . ');</pre></div>';
-      $output .= '<div class="icon-js"><strong>JavaScript:</strong> <pre>Backdrop.icons[\'' . $icon_key . '\']</pre></div>';
+      $output .= '<div class="icon-name"><h2>' . $icon_key . '</h2>';
+      $output .= '<p><strong>Provided by:</strong> ' . $icon_details['provider_detail'] . '</p>';
+      $output .= '<p class="icon-status"><strong>CSS/JS Status:</strong> <span>' . t('Inactive') . '</span>';
+      $output .= '</div>';
+      $output .= '<div class="icon-php"><label class="icon-browser-ready">PHP:</label> <pre>icon(\'' . $icon_key . '\');</pre></div>';
+      $output .= '<div class="icon-css"><label>CSS:</label> <pre>background-image: var(--icon-' . $icon_key . ');</pre></div>';
+      $output .= '<div class="icon-js"><label>JavaScript:</label> <pre>Backdrop.icons[\'' . $icon_key . '\']</pre></div>';
       $output .= '</div></div>';
     }
   }
@@ -188,7 +190,7 @@ function theme_icon_browser_page($variables) {
 
     foreach ($chunks[$current_page] as $icon) {
       $error_class = (!empty($icon['error'])) ? ' icon-error' : '';
-      $output .= '<div class="icon-wrapper' . $error_class . '">';
+      $output .= '<div class="icon-wrapper' . $error_class . '" data-icon-name="' . $icon['provider_key'] . '" data-icon-active="false">';
       $url = url('admin/config/media/icons/browse/' . $icon['provider_key'], array('query' => array('page' => $current_page)));
       $output .= '<a href="' . $url . '">';
       $output .= '<div class="icon">' . icon($icon['provider_key']) . '</div>';
@@ -201,6 +203,8 @@ function theme_icon_browser_page($variables) {
   }
   $output .= '</div>';
   $output .= theme('pager', array('quantity', count($results)));
+  backdrop_add_icons(array('check-circle-fill', 'warning-circle-fill'));
+  backdrop_add_js(backdrop_get_path('module', 'icon_browser') . '/js/icon_browser.js');
 
   return $output;
 }
