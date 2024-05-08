@@ -162,7 +162,7 @@ function theme_icon_browser_page($variables) {
         backdrop_add_library('system', 'backdrop.dismiss');
         $output .= '<a href="#" class="button button--dismiss dismiss" title="' . t('Dismiss') . '"><span class="icon-close"></span></a>' . "\n";
       }
-      if (!$icon_details['error']) {
+      if (empty($icon_details['error']) || !$icon_details['error']) {
         $output .= '<div class="icon-image">'. icon($icon_key) . '</div>';
       }
       else {
