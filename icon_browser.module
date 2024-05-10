@@ -45,7 +45,6 @@ function icon_browser_menu() {
 function icon_browser_load($icon_name) {
   return array(
     'name' => $icon_name,
-    'path' => icon_get_path($icon_name),
   );
 }
 
