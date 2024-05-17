@@ -55,9 +55,7 @@ function icon_browser_filters_form($form, &$form_state) {
       '#title' => t('Style'),
       '#options' => array(
         'any' => t('Any'),
-        'fill' => t('Fill'),
-        'outline' => t('Outline or other'),
-      ),
+      ) + icon_browser_get_approved_styles(),
       '#default_value' => icon_browser_get_filter_value('style'),
     ),
     'keyword' => array(
@@ -76,6 +74,11 @@ function icon_browser_filters_form($form, &$form_state) {
         'xlarge' => t('Extra Large'),
       ),
       '#default_value' => icon_browser_get_filter_value('size'),
+    ),
+    'include_brands' => array(
+      '#type' => 'checkbox',
+      '#title' => t('Include Brand icons'),
+      '#default_value' => icon_browser_get_filter_value('include_brands'),
     ),
     'actions' => array(
       '#type' => 'actions',
@@ -109,6 +112,7 @@ function icon_browser_filters_form_submit($form, &$form_state) {
       $config->set('provider', $form_state['values']['provider']);
       $config->set('style', $form_state['values']['style']);
       $config->set('size', $form_state['values']['size']);
+      $config->set('include_brands', $form_state['values']['include_brands']);
       $config->save();
       backdrop_set_message(t('Defaults saved.'));
     }
@@ -116,6 +120,7 @@ function icon_browser_filters_form_submit($form, &$form_state) {
     $_SESSION['icon_browser']['style'] = $form_state['values']['style'];
     $_SESSION['icon_browser']['keyword'] = $form_state['values']['keyword'];
     $_SESSION['icon_browser']['size'] = $form_state['values']['size'];
+    $_SESSION['icon_browser']['include_brands'] = $form_state['values']['include_brands'];
   }
   // Redirect back to the main form to remove any detail view.
   $form_state['redirect'] = 'admin/config/media/icons/browse';
@@ -127,16 +132,20 @@ function icon_browser_filters_form_submit($form, &$form_state) {
 function theme_icon_browser_page($variables) {
   backdrop_add_icons(array('seal-warning-fill'));
   $icon_key = check_plain(arg(5));
+  $include_brands = icon_browser_get_filter_value('include_brands');
   $provider = icon_browser_get_filter_value('provider');
   $style = icon_browser_get_filter_value('style');
   $keyword = icon_browser_get_filter_value('keyword');
   $size = icon_browser_get_filter_value('size');
   $results = array();
   foreach ($variables['icons'] as $icon) {
+    if (!$include_brands && $icon['is_brand']) {
+      continue;
+    }
     if ($provider != 'any' && $icon['provider'] != $provider) {
       continue;
     }
-    if ($style != 'any' && (($icon['fill'] && $style != 'fill') || (!$icon['fill'] && $style != 'outline'))) {
+    if ($style != 'any' && ($icon['style'] != $style)) {
       continue;
     }
     $searchtext = implode(' ', $icon);
@@ -245,9 +254,8 @@ function icon_browser_icon_details($icon_key = '') {
         'provider_detail' => t('Backdrop core'),
         'provider_key' => $icon_name,
         'name' => $icon_name,
-        'fill' => substr($icon_name, -5, 5) === '-fill',
         'directory' => ICON_BROWSER_PATH,
-      );
+      ) + icon_browser_get_icon_style($icon_name);
     }
   }
   // Icons provided by modules.
@@ -258,8 +266,7 @@ function icon_browser_icon_details($icon_key = '') {
       'provider_detail' => t('@module (module)', ['@module' => $icon['module']]),
       'provider_key' => $key,
       'name' => $icon['name'],
-      'fill' => substr($icon['name'], -5, 5) === '-fill',
-    );
+    ) + icon_browser_get_icon_style($icon['name']);
   }
   // Icons provided by themes.
   $themes = list_themes();
@@ -285,10 +292,9 @@ function icon_browser_icon_details($icon_key = '') {
               'provider_detail' => t('@theme (theme*) <br><br><em>*Theme-provided icons may only be available when the theme is active.</em>', ['@theme' => $theme]),
               'provider_key' => $icon_name,
               'name' => $icon_name,
-              'fill' => substr($icon_name, -5, 5) === '-fill',
               'directory' => $theme_directory,
               'error' => $error,
-            );
+            ) + icon_browser_get_icon_style($icon_name);
           }
         }
       }
@@ -304,4 +310,58 @@ function icon_browser_icon_details($icon_key = '') {
     $result = [];
   }
   return $result;
+}
+
+/**
+ * Helper function to get an icon style based on the last segment of the icon
+ * name. We have some pre-approved suffixes that correspond to style options.
+ *
+ * @param string $icon_name
+ *   The icon name to get the style for.
+ *
+ * @return array
+ *   An array keyed with:
+ *   - 'style': A string containing the style of the icon, or empty for default.
+ *   - 'is_brand': A boolean indicating whether this is a brand icon.
+ */
+function icon_browser_get_icon_style($icon_name) {
+  $icon_data = array(
+    'style' => '',
+    'is_brand' => FALSE,
+  );
+  $approved_styles = icon_browser_get_approved_styles();
+  // Split icon name by '-' and get the last segment.
+  $icon_name = explode('-', $icon_name);
+  $icon_style = array_pop($icon_name);
+  $brand_check = array_pop($icon_name);
+
+  if (in_array($icon_style, array_keys($approved_styles))) {
+    $icon_data['style'] = $icon_style;
+  }
+  else {
+    // Default to outline if no approved style is provided.
+    $icon_data['style'] = 'outline';
+  }
+  if ($icon_style == 'logo' || $brand_check == 'logo') {
+    $icon_data['is_brand'] = TRUE;
+  }
+  return $icon_data;
+}
+
+/**
+ * Helper function to get list of approved/known styles.
+ *
+ * @return array
+ *   An array of approved styles, keyed by the style machine name.
+ */
+function icon_browser_get_approved_styles() {
+  $approved_styles = array(
+    'fill' => t('Fill'),
+    'outline' => t('Outline (or other)'),
+    'thin' => t('Thin'),
+    'light' => t('Light'),
+    'bold' => t('Bold'),
+    'duotone' => t('Duotone'),
+  );
+  return $approved_styles;
 }
