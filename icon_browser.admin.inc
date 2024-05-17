@@ -265,7 +265,7 @@ function icon_browser_icon_details($icon_key = '') {
       'provider' => 'module',
       'provider_detail' => t('@module (module)', ['@module' => $icon['module']]),
       'provider_key' => $key,
-      'name' => $icon['name'],
+      'name' => isset($icon['name']) ? $icon['name'] : $key,
     ) + icon_browser_get_icon_style($icon['name']);
   }
   // Icons provided by themes.
