@@ -257,7 +257,7 @@ function icon_browser_icon_details($icon_key = '') {
       'provider' => 'module',
       'provider_detail' => t('@module (module)', ['@module' => $icon['module']]),
       'provider_key' => $key,
-      'name' => $icon['name'],
+      'name' => isset($icon['name']) ? $icon['name'] : $key,
       'fill' => substr($icon['name'], -5, 5) === '-fill',
     );
   }
