@@ -3,5 +3,6 @@
     "provider": "any",
     "style": "any",
     "keyword": "",
-    "size": "medium"
+    "size": "medium",
+    "is_brand": 0
 }
