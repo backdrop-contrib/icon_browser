@@ -261,12 +261,13 @@ function icon_browser_icon_details($icon_key = '') {
   // Icons provided by modules.
   $module_icons = icon_get_info();
   foreach ($module_icons as $key => $icon) {
+    $icon_name = isset($icon['name']) ? $icon['name'] : $key;
     $icons[$key] = array(
       'provider' => 'module',
       'provider_detail' => t('@module (module)', ['@module' => $icon['module']]),
       'provider_key' => $key,
-      'name' => isset($icon['name']) ? $icon['name'] : $key,
-    ) + icon_browser_get_icon_style($icon['name']);
+      'name' => $icon_name,
+    ) + icon_browser_get_icon_style($icon_name);
   }
   // Icons provided by themes.
   $themes = list_themes();
