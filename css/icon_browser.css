@@ -22,12 +22,6 @@
       .icon-name {
         color: unset;
         font-size: .7rem;
-        display: flex;
-        flex-direction: row;
-
-        &::after {
-          min-width: 1.25rem;
-        }
       }
     }
 
